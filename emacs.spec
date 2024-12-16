@@ -5,21 +5,26 @@
 %bcond_without lucid
 %bcond_without nw
 
+%global _hardened_build 1
+
+%global commit     cedb01b6c9c68051e00426415e21a960fdc3de76
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
+%global commit_date 20241213
+%global gitrel      .%{commit_date}.git%{shortcommit}
+
+
 Summary:       GNU Emacs text editor
-Name:          emacs
+Name:          emacs-mps
 Epoch:         1
-Version:       29.4
+Version:       31.0.50
 Release:       %autorelease
 License:       GPL-3.0-or-later AND CC0-1.0
 URL:           https://www.gnu.org/software/emacs/
-Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
-Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz.sig
-Source2:       https://keys.openpgp.org/vks/v1/by-fingerprint/17E90D521672C04631B1183EE78DAE0F3115E06B
-Source3:       https://keys.openpgp.org/vks/v1/by-fingerprint/CEA1DE21AB108493CC9C65742E82323B8F4353EE
-Source4:       dotemacs.el
-Source5:       site-start.el
-Source6:       default.el
-Source9:       emacs-desktop.sh
+Source0:       https://github.com/emacs-mirror/emacs/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+Source1:       dotemacs.el
+Source2:       site-start.el
+Source3:       default.el
+Source4:       emacs-desktop.sh
 
 # Avoid trademark issues
 Patch:         0001-Pong-and-Tetris-are-excluded.patch
@@ -92,6 +97,7 @@ BuildRequires: libwebp-devel
 BuildRequires: libxml2-devel
 BuildRequires: m17n-lib-devel
 BuildRequires: make
+BuildRequires: mps-kit
 BuildRequires: ncurses-devel
 BuildRequires: sqlite-devel
 BuildRequires: systemd-devel
@@ -261,11 +267,6 @@ Summary: Development header files for Emacs
 Development header files for Emacs.
 
 
-%prep
-cat '%{SOURCE2}' '%{SOURCE3}' > keyring
-%{gpgverify} --keyring=keyring --signature='%{SOURCE1}' --data='%{SOURCE0}'
-rm keyring
-
 %autosetup -N -c
 cd %{name}-%{version}
 %autopatch -p1
@@ -316,6 +317,7 @@ cd build-lucid
            --with-jpeg \
            --with-json \
            --with-modules \
+           --with-mps \
            --with-native-compilation=aot \
            --with-png \
            --with-rsvg \
@@ -338,6 +340,7 @@ cd build-nw
 %configure --program-suffix=-nw \
            --with-json \
            --with-modules \
+           --with-mps \
            --with-native-compilation=aot \
            --with-sqlite3 \
            --with-tree-sitter \
@@ -362,6 +365,7 @@ cd build-gtk+x11
            --with-jpeg \
            --with-json \
            --with-modules \
+           --with-mps \
            --with-native-compilation=aot \
            --with-png \
            --with-rsvg \
@@ -387,6 +391,7 @@ cd build-pgtk
            --with-jpeg \
            --with-json \
            --with-modules \
+           --with-mps \
            --with-native-compilation=aot \
            --with-pgtk \
            --with-png \
