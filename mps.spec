@@ -25,7 +25,7 @@ you run it.
 %setup -q -n mps-%{commit}
 
 %build
-gcc -O2 -flto=auto -ffat-lto-objects  -g -pipe -grecord-gcc-switches -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -Wno-error=dangling-pointer -c code/mps.c
+gcc -O2 -flto=auto -ffat-lto-objects -fPIC  -g -pipe -grecord-gcc-switches -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -Wno-error=dangling-pointer -c code/mps.c
 gcc-ar rvs libmps.a mps.o 
 
 %install

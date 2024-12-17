@@ -14,7 +14,7 @@
 
 
 Summary:       GNU Emacs text editor
-Name:          emacs-mps
+Name:          emacs
 Epoch:         1
 Version:       31.0.50
 Release:       %autorelease
@@ -32,7 +32,7 @@ Patch:         0001-Pong-and-Tetris-are-excluded.patch
 # rhbz#713600
 Patch:         emacs-spellchecker.patch
 
-Patch:         emacs-system-crypto-policies.patch
+#Patch:         emacs-system-crypto-policies.patch
 
 # causes a dependency on pkgconfig(systemd)
 # => remove it if we stop using this patch
@@ -40,27 +40,27 @@ Patch:         emacs-libdir-vs-systemd.patch
 
 # Avoid using the pure GTK build on X11 where it is unsupported:
 Patch:         emacs-desktop.patch
-Patch:         emacs-pgtk-on-x-error-message.patch
+#Patch:         emacs-pgtk-on-x-error-message.patch
 
 # Skip failing tests (patches taken from Emacs Git)
-Patch:         0001-Fix-failing-help-fns-test.patch
-Patch:         0001-Fix-flymake-tests-with-GCC-14.patch
+#Patch:         0001-Fix-failing-help-fns-test.patch
+#Patch:         0001-Fix-flymake-tests-with-GCC-14.patch
 
 # Fix intermittently failing test (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72073)
-Patch:         0001-Fix-wdired-test-unfinished-edit-01-when-temp-dirname.patch
+#Patch:         0001-Fix-wdired-test-unfinished-edit-01-when-temp-dirname.patch
 
 # Fix intermittently failing test (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72120)
-Patch:         0001-Fix-intermittent-failure-of-dired-test-bug27243-02.patch
-Patch:         0004-Try-harder-to-stabalise-dired-test-bug27243-02.patch
+#Patch:         0001-Fix-intermittent-failure-of-dired-test-bug27243-02.patch
+#Patch:         0004-Try-harder-to-stabalise-dired-test-bug27243-02.patch
 
 # Skip intermittently failing tests
-Patch:         0002-Test-eshell-test-subcommand-reset-in-pipeline-is-uns.patch
+#Patch:         0002-Test-eshell-test-subcommand-reset-in-pipeline-is-uns.patch
 Patch:         0003-Mark-multiple-mml-sec-tests-as-unstable-when-built-i.patch
 
 # Workaround for https://bugzilla.redhat.com/show_bug.cgi?id=2276822
 # (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=63555).  If GDK ever
 # gets any new backends, this patch may need extending.
-Patch:         0001-Apply-display-kluge-for-PGTK-too.patch
+#Patch:         0001-Apply-display-kluge-for-PGTK-too.patch
 Patch:         0002-Fall-back-to-the-terminal-from-pure-GTK-when-no-disp.patch
 
 BuildRequires: alsa-lib-devel
@@ -266,16 +266,15 @@ Summary: Development header files for Emacs
 %description devel
 Development header files for Emacs.
 
-
+%prep
 %autosetup -N -c
-cd %{name}-%{version}
-%autopatch -p1
+cd %{name}-%{commit}
 
 # Avoid trademark issues
-rm lisp/play/pong.el lisp/play/pong.elc \
-   lisp/play/tetris.el lisp/play/tetris.elc
+rm lisp/play/pong.el lisp/play/tetris.el
 
-autoconf
+#autoconf
+./autogen.sh
 
 %ifarch %{ix86}
 %define setarch setarch %{_arch} -R
@@ -290,15 +289,15 @@ ln -s ../../%{name}/%{version}/etc/NEWS doc
 
 cd ..
 %if %{with lucid}
-cp -a %{name}-%{version} build-lucid
+cp -a %{name}-%{commit} build-lucid
 %endif
 %if %{with nw}
-cp -a %{name}-%{version} build-nw
+cp -a %{name}-%{commit} build-nw
 %endif
 %if %{with gtkx11}
-cp -a %{name}-%{version} build-gtk+x11
+cp -a %{name}-%{commit} build-gtk+x11
 %endif
-mv %{name}-%{version} build-pgtk
+mv %{name}-%{commit} build-pgtk
 
 
 %build
